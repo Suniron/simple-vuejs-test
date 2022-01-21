@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vue.JS test 🧪</title>
+  </head>
+  <style>
+    .bounce-enter-active {
+      animation: bounce-in 0.5s;
+    }
+
+    /* Transition */
+    @keyframes bounce-in {
+      0% {
+        transform: scale(0);
+      }
+      50% {
+        transform: scale(1.25);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+  </style>
+  <body>
+    <div id="my-app" class="px-4 py-2 w-80">
+      <h1 class="text-3xl font-bold">{{title}}</h1>
+
+      <div class="border-2 p-2 m-2">
+        <!-- Bind testing -->
+        <div class="w-full flex justify-center my-4">
+          <!-- First method to bind img -->
+          <img
+            class="w-24 rounded-l-xl"
+            v-bind:src="this.myHead.urls[this.myHead.selected.leftHeadUrlIndex]"
+          />
+          <!-- Second method to bind img -->
+          <img
+            class="w-24 rounded-r-xl"
+            :src="this.myHead.urls[this.myHead.selected.rightHeadUrlIndex]"
+          />
+        </div>
+
+        <p
+          @mouseover="switchMyHeadImages"
+          class="cursor-pointer bg-green-200 text-center rounded-lg border-2"
+        >
+          Hoover me to switch images !
+        </p>
+      </div>
+
+      <div class="border-2 p-2 m-2">
+        <!-- Conditional render -->
+        <div>
+          <p v-if="isLightOn">Light is on ✅!</p>
+          <p v-else>Light is off ❌!</p>
+        </div>
+
+        <transition name="bounce">
+          <!-- TODO: fix this transition -->
+          <div>
+            <p>Switch count: {{switchCount}}</p>
+            <p>Electricity total cost: {{electricityTotalCost}}$</p>
+          </div>
+        </transition>
+
+        <!-- v-on:click and @click are same-->
+        <button
+          v-on:click="switchLight()"
+          class="p-2 border-2 bg-blue-400 hover:bg-blue-700 hover:text-gray-100 rounded-xl"
+        >
+          Switch the light
+        </button>
+
+        <!-- v-bind:class and :class are same-->
+        <button
+          @click="switchCount = 0; isLightOn = false"
+          :disabled="switchCount === 0"
+          :class="{ 'bg-red-400': switchCount === 0, 'bg-green-400': switchCount > 0 }"
+          class="p-2 border-2 bg-orange-400 hover:bg-orange-700 hover:text-gray-100 rounded-xl"
+        >
+          Reset count
+        </button>
+      </div>
+
+      <!-- Conditional render by "display: none" -->
+      <div class="border-2 p-2 m-2">
+        <p v-show="isAvailable">I'm not available to help you :(</p>
+      </div>
+
+      <div class="border-2 p-2 m-2">
+        <h2 class="text-xl font-bold">
+          What about my {{myChildren.length}} children?
+        </h2>
+
+        <!-- Object render from array -->
+        <ul>
+          <li v-for="(child, index) in myChildren" :key="index">{{child}}</li>
+        </ul>
+        <!-- Object destructuring render from array + conditional rendering -->
+        <ul>
+          <li
+            v-for="{name, age, color, index} in myChildren"
+            :style="{backgroundColor:color}"
+            :key="index"
+            class="text-white"
+          >
+            My child {{name}} is {{age}} {{age>1?"years":"year"}}
+          </li>
+        </ul>
+      </div>
+
+      <!-- Bidirectional link -->
+      <div class="border-2 p-2 m-2">
+        <h2 class="text-xl font-bold">Play with input binding!</h2>
+        <p>
+          My nickname is {{nickName}}.<span v-if="nickName === 'Suniron'">
+            It's right!</span
+          >
+        </p>
+        <input
+          class="border-2"
+          v-model="nickName"
+          placeholder="Give me a nickname 🙏"
+        />
+      </div>
+
+      <!-- Components with static props -->
+      <div class="border-2 p-2 m-2">
+        <h2 class="text-xl font-bold">Component way 🧱</h2>
+        <skill name="Cleaning" @level-up="totalSkillsScoreAdd(1)" @level-down="totalSkillsScoreAdd(-1)"></skill>
+        <skill name="Ironing" @level-up="totalSkillsScoreAdd(1)" @level-down="totalSkillsScoreAdd(-1)"></skill>
+        <skill name="Programming"></skill>
+
+        <!-- Component with dynamic props -->
+        <skill :name="'Electricity (current price: ' + electricityTotalCost + '$)'"></skill>
+        
+        <div v-if="totalSkillsScore>0">
+          The Best Skill is: {{totalSkillsScore}}
+        </div>
+      </div>
+    </div>
+  </body>
+  <script src="https://unpkg.com/vue@next"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="main.js"></script>
+  <script src="components/Skill.js"></script>
+  <script>
+    app.mount("#my-app");
+  </script>
+</html>
